@@ -10,39 +10,52 @@
 
 extern void HexDump(unsigned char* lpBuffer, int32_t iBufferSize);
 
+#define FRAMES_NUM			22050 * 5
+
 int main(int argc, char* argv[])
 {
-	SF_INFO sndInfo2;
-	sndInfo2.frames = 441000;
-	sndInfo2.samplerate = 44100;
-	sndInfo2.channels = 1;
-	sndInfo2.format = SF_FORMAT_WAV|SF_FORMAT_PCM_16;
-	sndInfo2.sections = 1;
-	sndInfo2.seekable = 1;
-	SNDFILE* fdSnd2 = sf_open(argv[1], SFM_WRITE, &sndInfo2);
-
-	short tmp = boost::lexical_cast<short, char*>(argv[2]);
-	short* sample_buffer2 = new short[441000];
-	bool act = true;
-	for(int i=0, j=0; i<441000 && j>=-tmp && j<=tmp; ++i)
+	int iFrequency = atoi(argv[2]);
+	int iAmplitude = atoi(argv[3]);
+	/*
+	if(iAmplitude >= (0xFFFF / 2))
 	{
-		sample_buffer2[i] = j;
-		if(j==tmp)
-			act = false;
-		else if(j == -tmp)
-			act = true;
-			
-		if(act) ++j;
-		else --j;
+		printf("amplitude must less than PCM_16/2.\n");
+		return -1;
 	}
+	*/
 	
-//	HexDump((unsigned char*)sample_buffer2, 441000*sizeof(short));
-//	exit(0);
+	SF_INFO sndinfo;
+	sndinfo.frames = FRAMES_NUM;		// 10s
+	sndinfo.samplerate = 22050;
+	sndinfo.channels = 1;
+	sndinfo.format = SF_FORMAT_WAV|SF_FORMAT_PCM_16;
+	sndinfo.sections = 1;
+	sndinfo.seekable = 1;
+	SNDFILE* fdSnd = sf_open(argv[1], SFM_WRITE, &sndinfo);
 
-	sf_count_t retCount2 = sf_writef_short(fdSnd2, (const short*)sample_buffer2, 441000);
+	short* sample_buffer = new short[FRAMES_NUM];
+	memset(sample_buffer, 0, sizeof(short)*FRAMES_NUM);
+
+	int SampleCountPerFreq = 22050 / iFrequency;
+	short ilen = (short)iAmplitude / SampleCountPerFreq;
+	int halfCountPerFreq = SampleCountPerFreq / 2;
+	
+	for(int i=0, j=0; i<FRAMES_NUM; ++i, ++j)
+	{
+		if(j < halfCountPerFreq)
+			sample_buffer[i] = -iAmplitude + j*ilen;
+		else if(j >= halfCountPerFreq)
+		{
+			sample_buffer[i] = iAmplitude - j*ilen;
+			if(j + 1 > SampleCountPerFreq)
+				j = 0;
+		}
+	}
+
+	sf_count_t retCount2 = sf_writef_short(fdSnd, sample_buffer, FRAMES_NUM);
 	printf("write count: %lld\n", retCount2);
 
-	sf_close(fdSnd2);
+	sf_close(fdSnd);
 
 	return 0;
 }
