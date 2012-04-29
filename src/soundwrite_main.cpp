@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 	memset(sample_buffer, 0, sizeof(short)*FRAMES_NUM);
 
 	int SampleCountPerFreq = 22050 / iFrequency;
-	short ilen = (short)iAmplitude / SampleCountPerFreq;
+	short ilen = (short)iAmplitude * 4 / SampleCountPerFreq;
 	int halfCountPerFreq = SampleCountPerFreq / 2;
 	
 	for(int i=0, j=0; i<FRAMES_NUM; ++i, ++j)
