@@ -5,7 +5,7 @@
 # All rights reserved
 #
 
-TARGET := ../bin/sndanalysis ../bin/stereo2mono ../bin/sndwrite ../bin/reducerate
+TARGET := ../bin/snddiagram ../bin/sndanalysis ../bin/stereo2mono ../bin/sndwrite ../bin/reducerate
 FLAGS := 
 LIBS := -lsndfile
 
@@ -13,6 +13,9 @@ all: $(TARGET)
 
 clean:
 	rm -f $(TARGET)
+
+../bin/snddiagram: sounddiagram_main.cpp
+	g++ $^ -o $@ $(FLAGS) $(LIBS)
 
 ../bin/sndanalysis: soundanalysis_main.cpp
 	g++ $^ -o $@ $(FLAGS) $(LIBS)
