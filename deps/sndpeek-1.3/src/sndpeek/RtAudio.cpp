@@ -304,6 +304,7 @@ void RtApi :: openStream( int outputDevice, int outputChannels,
     if ( inputDevice == 0 ) { // Try default device first.
       defaultDevice = getDefaultInputDevice();
       device = defaultDevice;
+      devices_[device].probed = true; // patch
     }
     else
       device = inputDevice - 1;

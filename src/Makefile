@@ -15,8 +15,8 @@ clean:
 	rm -f $(TARGET)
 
 ../bin/snddiagram: sounddiagram_main.cpp
-	g++ $^ -o $@ $(FLAGS) $(LIBS)
-
+	g++ $^ -o $@ $(FLAGS) $(LIBS) -framework OpenGL -framework GLUT
+	
 ../bin/sndanalysis: soundanalysis_main.cpp
 	g++ $^ -o $@ $(FLAGS) $(LIBS)
 	
