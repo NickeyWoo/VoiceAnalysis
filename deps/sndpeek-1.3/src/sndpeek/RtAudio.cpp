@@ -38,7 +38,9 @@
 /************************************************************************/
 
 // RtAudio: Version 3.0.1, 22 March 2004
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "RtAudio.h"
 #include <iostream>
 

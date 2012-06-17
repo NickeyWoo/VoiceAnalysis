@@ -24,8 +24,9 @@
    Linear Prediction Coefficients (LPC). Features commonly used 
 in Speech Recognition research. 
 */
-
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "LPC.h"
 
 LPC::LPC( unsigned int inSize )
